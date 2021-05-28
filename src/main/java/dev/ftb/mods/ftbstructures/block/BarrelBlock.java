@@ -1,10 +1,10 @@
 package dev.ftb.mods.ftbstructures.block;
 
+import dev.ftb.mods.ftbstructures.FTBStructuresData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.GameRules;
@@ -90,7 +90,9 @@ public class BarrelBlock extends Block implements SimpleWaterloggedBlock {
 		super.spawnAfterBreak(state, level, pos, stack);
 
 		if (level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
-			popResource(level, pos, new ItemStack(Items.APPLE));
+			for (ItemStack is : FTBStructuresData.getItems(asItem(), level.random)) {
+				popResource(level, pos, is);
+			}
 		}
 	}
 

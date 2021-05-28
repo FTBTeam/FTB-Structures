@@ -20,11 +20,11 @@ public class OceanLootFeature extends Feature<OceanLootConfiguration> {
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, Random random, BlockPos pos, OceanLootConfiguration config) {
-		if (FTBStructuresData.oceanStructures.isEmpty()) {
+		FTBStructuresData.OceanStructure structure = FTBStructuresData.getOceanStructure(random);
+
+		if (structure == null) {
 			return false;
 		}
-
-		FTBStructuresData.OceanStructure structure = FTBStructuresData.oceanStructures.get(random.nextInt(FTBStructuresData.oceanStructures.size()));
 
 		int x = pos.getX();
 		int z = pos.getZ();

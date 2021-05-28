@@ -1,9 +1,13 @@
 package dev.ftb.mods.ftbstructures.block;
 
+import dev.ftb.mods.ftbstructures.FTBStructuresData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -79,5 +83,19 @@ public class CrateBlock extends Block {
 	@Deprecated
 	public VoxelShape getBlockSupportShape(BlockState arg, BlockGetter arg2, BlockPos arg3) {
 		return Shapes.block();
+	}
+
+	// TODO: Change this to GUI
+
+	@Override
+	@Deprecated
+	public void spawnAfterBreak(BlockState state, ServerLevel level, BlockPos pos, ItemStack stack) {
+		super.spawnAfterBreak(state, level, pos, stack);
+
+		if (level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
+			for (ItemStack is : FTBStructuresData.getItems(asItem(), level.random)) {
+				popResource(level, pos, is);
+			}
+		}
 	}
 }
