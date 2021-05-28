@@ -1,0 +1,9 @@
+{
+	"parent": "ftbstructures:block/barrel",
+	"textures": {
+		"side": "ftbstructures:block/blue_barrel/side",
+		"bottom": "ftbstructures:block/blue_barrel/bottom",
+		"particle": "ftbstructures:block/blue_barrel/top",
+		"top": "ftbstructures:block/blue_barrel/top"
+	}
+}

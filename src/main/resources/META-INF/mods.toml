@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "[36,)"
+issueTrackerURL = "https://github.com/FTBTeam/FTB-Structures/issues"
+license = "All Rights Reserved"
+
+[[mods]]
+modId = "ftbstructures"
+version = "${version}"
+displayName = "FTB Structures"
+authors = "LatvianModder"
+description = '''
+Adds a couple structures that spawn in world
+'''
+
+[[dependencies.ftbstructures]]
+modId = "forge"
+mandatory = true
+versionRange = "[36,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.ftbstructures]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.5,)"
+ordering = "NONE"
+side = "BOTH"

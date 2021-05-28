@@ -1,0 +1,19 @@
+{
+	"variants": {
+		"facing=north": {
+			"model": "ftbstructures:block/small_crate"
+		},
+		"facing=south": {
+			"model": "ftbstructures:block/small_crate",
+			"y": 180
+		},
+		"facing=west": {
+			"model": "ftbstructures:block/small_crate",
+			"y": 270
+		},
+		"facing=east": {
+			"model": "ftbstructures:block/small_crate",
+			"y": 90
+		}
+	}
+}
