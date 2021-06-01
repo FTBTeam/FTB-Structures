@@ -6,7 +6,6 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -14,14 +13,14 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 
 import java.util.Random;
 
-public class OceanLootFeature extends Feature<NoneFeatureConfiguration> {
-	public OceanLootFeature() {
+public class EndLootFeature extends Feature<NoneFeatureConfiguration> {
+	public EndLootFeature() {
 		super(NoneFeatureConfiguration.CODEC);
 	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, Random random, BlockPos pos, NoneFeatureConfiguration config) {
-		FTBStructuresData.Structure structure = FTBStructuresData.oceanStructures.get(random);
+		FTBStructuresData.Structure structure = FTBStructuresData.endStructures.get(random);
 
 		if (structure == null) {
 			return false;
@@ -29,7 +28,11 @@ public class OceanLootFeature extends Feature<NoneFeatureConfiguration> {
 
 		int x = pos.getX();
 		int z = pos.getZ();
-		int y = level.getHeight(structure.oceanFloor ? Heightmap.Types.OCEAN_FLOOR_WG : Heightmap.Types.WORLD_SURFACE_WG, x, z);
+		int y = structure.minY + random.nextInt(structure.maxY - structure.minY + 1);
+
+		if (!level.getBlockState(new BlockPos(x, y, z)).isAir()) {
+			return false;
+		}
 
 		StructureTemplate template = structure.getTemplate(level);
 		int sx = template.getSize().getX();

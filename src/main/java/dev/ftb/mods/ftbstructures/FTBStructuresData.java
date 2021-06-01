@@ -17,11 +17,13 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 public class FTBStructuresData {
-	public static class OceanStructure {
+	public static class Structure {
 		public String id = "";
 		public int y = -1;
 		public boolean oceanFloor = false;
 		public int weight = 1;
+		public int minY = 70;
+		public int maxY = 100;
 
 		private StructureTemplate template;
 
@@ -31,6 +33,40 @@ public class FTBStructuresData {
 			}
 
 			return template;
+		}
+	}
+
+	public static class StructureGroup {
+		private int totalWeight = 0;
+		private final List<Structure> structures = new ArrayList<>();
+
+		public void add(Consumer<Structure> consumer) {
+			Structure s = new Structure();
+			consumer.accept(s);
+			totalWeight += s.weight;
+			structures.add(s);
+		}
+
+		@Nullable
+		public Structure get(Random random) {
+			if (structures.isEmpty()) {
+				return null;
+			}
+
+			int number = random.nextInt(totalWeight) + 1;
+			int currentWeight = 0;
+
+			for (Structure structure : structures) {
+				if (structure.weight > 0) {
+					currentWeight += structure.weight;
+
+					if (currentWeight >= number) {
+						return structure;
+					}
+				}
+			}
+
+			return structures.get(random.nextInt(structures.size()));
 		}
 	}
 
@@ -76,23 +112,20 @@ public class FTBStructuresData {
 		}
 	}
 
-	public static int worldgenChance = 1;
+	public static int oceanWorldgenChance = 1;
+	public static int netherWorldgenChance = 1;
+	public static int endWorldgenChance = 1;
 
-	public static int totalOceanStructureWeight = 0;
-	public static final List<OceanStructure> oceanStructures = new ArrayList<>();
+	public static StructureGroup oceanStructures = new StructureGroup();
+	public static StructureGroup netherStructures = new StructureGroup();
+	public static StructureGroup endStructures = new StructureGroup();
 	private static final Map<Item, Loot> lootMap = new HashMap<>();
 
 	public static void reset() {
-		totalOceanStructureWeight = 0;
-		oceanStructures.clear();
+		oceanStructures = new StructureGroup();
+		netherStructures = new StructureGroup();
+		endStructures = new StructureGroup();
 		lootMap.clear();
-	}
-
-	public static void addOceanStructure(Consumer<OceanStructure> consumer) {
-		OceanStructure s = new OceanStructure();
-		consumer.accept(s);
-		totalOceanStructureWeight += s.weight;
-		oceanStructures.add(s);
 	}
 
 	public static void setLoot(Item item, Consumer<Loot> consumer) {
@@ -100,28 +133,6 @@ public class FTBStructuresData {
 		loot.item = item;
 		consumer.accept(loot);
 		lootMap.put(item, loot);
-	}
-
-	@Nullable
-	public static OceanStructure getOceanStructure(Random random) {
-		if (oceanStructures.isEmpty()) {
-			return null;
-		}
-
-		int number = random.nextInt(totalOceanStructureWeight) + 1;
-		int currentWeight = 0;
-
-		for (OceanStructure structure : oceanStructures) {
-			if (structure.weight > 0) {
-				currentWeight += structure.weight;
-
-				if (currentWeight >= number) {
-					return structure;
-				}
-			}
-		}
-
-		return oceanStructures.get(random.nextInt(oceanStructures.size()));
 	}
 
 	public static List<ItemStack> getItems(Item item, Random random) {

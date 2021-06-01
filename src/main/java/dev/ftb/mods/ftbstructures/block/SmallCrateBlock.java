@@ -74,7 +74,7 @@ public class SmallCrateBlock extends Block {
 	}
 
 	@Override
-	@Nullable
+	@Deprecated
 	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos pos, BlockPos facingPos) {
 		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
 			level.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));

@@ -5,12 +5,14 @@ import dev.ftb.mods.ftbstructures.block.entity.FTBStructuresBlockEntities;
 import dev.ftb.mods.ftbstructures.client.FTBStructuresClient;
 import dev.ftb.mods.ftbstructures.item.FTBStructuresItems;
 import dev.ftb.mods.ftbstructures.recipe.FTBStructuresRecipeSerializers;
-import dev.ftb.mods.ftbstructures.worldgen.OceanLootConfiguration;
+import dev.ftb.mods.ftbstructures.worldgen.EndLootFeature;
+import dev.ftb.mods.ftbstructures.worldgen.NetherLootFeature;
 import dev.ftb.mods.ftbstructures.worldgen.OceanLootFeature;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -54,7 +56,23 @@ public class FTBStructures {
 
 	private void worldgen(BiomeLoadingEvent event) {
 		if (event.getCategory() == Biome.BiomeCategory.OCEAN) {
-			event.getGeneration().addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, new OceanLootFeature().configured(new OceanLootConfiguration(FTBStructuresBlocks.WHITE_BARREL.get().defaultBlockState())).chance(FTBStructuresData.worldgenChance).squared());
+			event.getGeneration().addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, new OceanLootFeature()
+					.configured(NoneFeatureConfiguration.INSTANCE)
+					.chance(FTBStructuresData.oceanWorldgenChance)
+					.squared()
+			);
+		} else if (event.getCategory() == Biome.BiomeCategory.NETHER) {
+			event.getGeneration().addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, new NetherLootFeature()
+					.configured(NoneFeatureConfiguration.INSTANCE)
+					.chance(FTBStructuresData.netherWorldgenChance)
+					.squared()
+			);
+		} else if (event.getCategory() == Biome.BiomeCategory.THEEND) {
+			event.getGeneration().addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, new EndLootFeature()
+					.configured(NoneFeatureConfiguration.INSTANCE)
+					.chance(FTBStructuresData.endWorldgenChance)
+					.squared()
+			);
 		}
 	}
 }
