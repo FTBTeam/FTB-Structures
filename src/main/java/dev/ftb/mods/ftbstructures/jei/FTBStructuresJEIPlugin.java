@@ -1,8 +1,8 @@
 package dev.ftb.mods.ftbstructures.jei;
 
 import dev.ftb.mods.ftbstructures.FTBStructures;
-import dev.ftb.mods.ftbstructures.recipe.FTBStructuresRecipeSerializers;
-import dev.ftb.mods.ftbstructures.recipe.NoInventory;
+import dev.ftb.mods.ftbstructures.FTBStructuresData;
+import dev.ftb.mods.ftbstructures.recipe.LootRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -10,7 +10,12 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author LatvianModder
@@ -31,8 +36,28 @@ public class FTBStructuresJEIPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration r) {
-		Level level = Minecraft.getInstance().level;
-		r.addRecipes(level.getRecipeManager().getRecipesFor(FTBStructuresRecipeSerializers.LOOT_TYPE, NoInventory.INSTANCE, level), LootCategory.UID);
+		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
+		Recipe<?> recipe = recipeManager.byKey(new ResourceLocation(FTBStructures.MOD_ID + ":loot")).orElse(null);
+
+		if (recipe instanceof LootRecipe) {
+			LootRecipe lr = (LootRecipe) recipe;
+			List<LootWrapper> recipes = new ArrayList<>();
+
+			for (FTBStructuresData.Loot loot : lr.loot) {
+				ItemStack in = new ItemStack(loot.item);
+
+				for (FTBStructuresData.WeightedItem item : loot.items) {
+					LootWrapper wrapper = new LootWrapper();
+					wrapper.input = in;
+					wrapper.output = item.item;
+					wrapper.weight = item.weight;
+					wrapper.totalWeight = loot.totalWeight;
+					recipes.add(wrapper);
+				}
+			}
+
+			r.addRecipes(recipes, LootCategory.UID);
+		}
 	}
 
 	@Override

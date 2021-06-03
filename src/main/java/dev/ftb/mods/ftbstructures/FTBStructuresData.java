@@ -1,5 +1,6 @@
 package dev.ftb.mods.ftbstructures;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +11,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -82,6 +83,25 @@ public class FTBStructuresData {
 		public final List<WeightedItem> items = new ArrayList<>();
 		public int totalWeight = 0;
 
+		public Loot() {
+		}
+
+		public Loot(FriendlyByteBuf buffer) {
+			item = Item.byId(buffer.readVarInt());
+			minRolls = buffer.readVarInt();
+			maxRolls = buffer.readVarInt();
+
+			int s = buffer.readVarInt();
+
+			for (int i = 0; i < s; i++) {
+				WeightedItem wi = new WeightedItem();
+				wi.item = buffer.readItem();
+				wi.weight = buffer.readVarInt();
+				totalWeight += wi.weight;
+				items.add(wi);
+			}
+		}
+
 		public void add(ItemStack item, int weight) {
 			WeightedItem i = new WeightedItem();
 			i.item = item;
@@ -110,6 +130,18 @@ public class FTBStructuresData {
 
 			return ItemStack.EMPTY;
 		}
+
+		public void write(FriendlyByteBuf buffer) {
+			buffer.writeVarInt(Item.getId(item));
+			buffer.writeVarInt(minRolls);
+			buffer.writeVarInt(maxRolls);
+			buffer.writeVarInt(items.size());
+
+			for (WeightedItem wi : items) {
+				buffer.writeItem(wi.item);
+				buffer.writeVarInt(wi.weight);
+			}
+		}
 	}
 
 	public static int oceanWorldgenChance = 1;
@@ -119,7 +151,7 @@ public class FTBStructuresData {
 	public static StructureGroup oceanStructures = new StructureGroup();
 	public static StructureGroup netherStructures = new StructureGroup();
 	public static StructureGroup endStructures = new StructureGroup();
-	private static final Map<Item, Loot> lootMap = new HashMap<>();
+	public static final Map<Item, Loot> lootMap = new LinkedHashMap<>();
 
 	public static void reset() {
 		oceanStructures = new StructureGroup();

@@ -1,1 +1,1 @@
-dev.ftb.mods.ftbstructures.kubejs.FTBJarModKubeJSPlugin
+dev.ftb.mods.ftbstructures.kubejs.FTBStructuresKubeJSPlugin

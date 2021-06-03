@@ -5,7 +5,7 @@ import dev.latvian.kubejs.KubeJSPlugin;
 import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
 import net.minecraft.resources.ResourceLocation;
 
-public class FTBJarModKubeJSPlugin extends KubeJSPlugin {
+public class FTBStructuresKubeJSPlugin extends KubeJSPlugin {
 	@Override
 	public void init() {
 		RegisterRecipeHandlersEvent.EVENT.register(event -> event.register(new ResourceLocation(FTBStructures.MOD_ID, "loot"), LootRecipeJS::new));

@@ -81,6 +81,7 @@ public class FTBStructuresDataGenHandler {
 		@Override
 		protected void addTranslations() {
 			add("itemGroup.ftbstructures", "FTB Structures");
+			add("jei." + FTBStructures.MOD_ID + ".loot", "Loot");
 			addBlock(FTBStructuresBlocks.SMALL_CRATE, "Small Crate");
 			addBlock(FTBStructuresBlocks.CRATE, "Crate");
 			addBlock(FTBStructuresBlocks.WHITE_BARREL, "White Barrel");
