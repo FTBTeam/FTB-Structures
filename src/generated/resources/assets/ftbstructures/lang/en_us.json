@@ -4,5 +4,6 @@
 	"block.ftbstructures.red_barrel": "Red Barrel",
 	"block.ftbstructures.small_crate": "Small Crate",
 	"block.ftbstructures.white_barrel": "White Barrel",
-	"itemGroup.ftbstructures": "FTB Structures"
+	"itemGroup.ftbstructures": "FTB Structures",
+	"jei.ftbstructures.loot": "Loot"
 }

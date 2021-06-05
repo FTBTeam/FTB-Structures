@@ -29,7 +29,7 @@ public class NetherLootFeature extends Feature<NoneFeatureConfiguration> {
 
 		int x = pos.getX();
 		int z = pos.getZ();
-		int y = 32;
+		int y = FTBStructuresData.netherLavaLevel;
 
 		if (level.getFluidState(new BlockPos(x, y - 1, z)).getType().isSame(Fluids.LAVA)) {
 			return false;

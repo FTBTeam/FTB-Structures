@@ -32,7 +32,7 @@ public class LootCategory implements IRecipeCategory<LootWrapper> {
 	private final IDrawable icon;
 
 	public LootCategory(IGuiHelper guiHelper) {
-		background = guiHelper.drawableBuilder(new ResourceLocation(FTBStructures.MOD_ID + ":textures/gui/loot_jei.png"), 0, 0, 71, 30).setTextureSize(128, 64).build();
+		background = guiHelper.drawableBuilder(new ResourceLocation(FTBStructures.MOD_ID + ":textures/loot_jei.png"), 0, 0, 71, 30).setTextureSize(128, 64).build();
 		icon = guiHelper.createDrawableIngredient(new ItemStack(FTBStructuresItems.CRATE.get()));
 	}
 
@@ -81,7 +81,7 @@ public class LootCategory implements IRecipeCategory<LootWrapper> {
 			if (Screen.hasShiftDown()) {
 				return Collections.singletonList(new TextComponent("Weight: " + recipe.weight).withStyle(ChatFormatting.GRAY));
 			} else {
-				return Collections.singletonList(new TextComponent("Chance: " + StringUtils.formatDouble00(recipe.weight * 100D / (double) recipe.totalWeight) + "%").withStyle(ChatFormatting.GRAY));
+				return Collections.singletonList(new TextComponent("Chance: " + (recipe.weight == 0 ? "100%" : StringUtils.formatDouble00(recipe.weight * 100D / (double) recipe.totalWeight) + "%")).withStyle(ChatFormatting.GRAY));
 			}
 		}
 

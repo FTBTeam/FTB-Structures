@@ -147,6 +147,7 @@ public class FTBStructuresData {
 	public static int oceanWorldgenChance = 1;
 	public static int netherWorldgenChance = 1;
 	public static int endWorldgenChance = 1;
+	public static int netherLavaLevel = 32;
 
 	public static StructureGroup oceanStructures = new StructureGroup();
 	public static StructureGroup netherStructures = new StructureGroup();
