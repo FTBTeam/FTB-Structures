@@ -56,19 +56,19 @@ public class FTBStructures {
 
 	private void worldgen(BiomeLoadingEvent event) {
 		if (event.getCategory() == Biome.BiomeCategory.OCEAN) {
-			event.getGeneration().addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, new OceanLootFeature()
+			event.getGeneration().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, new OceanLootFeature()
 					.configured(NoneFeatureConfiguration.INSTANCE)
 					.chance(FTBStructuresData.oceanWorldgenChance)
 					.squared()
 			);
 		} else if (event.getCategory() == Biome.BiomeCategory.NETHER) {
-			event.getGeneration().addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, new NetherLootFeature()
+			event.getGeneration().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, new NetherLootFeature()
 					.configured(NoneFeatureConfiguration.INSTANCE)
 					.chance(FTBStructuresData.netherWorldgenChance)
 					.squared()
 			);
 		} else if (event.getCategory() == Biome.BiomeCategory.THEEND) {
-			event.getGeneration().addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, new EndLootFeature()
+			event.getGeneration().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, new EndLootFeature()
 					.configured(NoneFeatureConfiguration.INSTANCE)
 					.chance(FTBStructuresData.endWorldgenChance)
 					.squared()
