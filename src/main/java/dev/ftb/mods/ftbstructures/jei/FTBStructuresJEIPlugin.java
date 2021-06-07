@@ -9,8 +9,10 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 
@@ -50,6 +52,12 @@ public class FTBStructuresJEIPlugin implements IModPlugin {
 					LootWrapper wrapper = new LootWrapper();
 					wrapper.input = in;
 					wrapper.output = item.item;
+
+					if (wrapper.output.isEmpty()) {
+						wrapper.output = new ItemStack(Items.BARRIER);
+						wrapper.output.setHoverName(new TextComponent("No Drop"));
+					}
+
 					wrapper.weight = item.weight;
 					wrapper.totalWeight = loot.totalWeight;
 					recipes.add(wrapper);
