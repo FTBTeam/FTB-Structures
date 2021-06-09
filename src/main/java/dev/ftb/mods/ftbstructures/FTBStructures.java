@@ -6,10 +6,8 @@ import dev.ftb.mods.ftbstructures.client.FTBStructuresClient;
 import dev.ftb.mods.ftbstructures.item.FTBStructuresItems;
 import dev.ftb.mods.ftbstructures.recipe.FTBStructuresRecipeSerializers;
 import dev.ftb.mods.ftbstructures.worldgen.EndLootFeature;
-import dev.ftb.mods.ftbstructures.worldgen.FlatChunkGenerator;
 import dev.ftb.mods.ftbstructures.worldgen.NetherLootFeature;
 import dev.ftb.mods.ftbstructures.worldgen.OceanLootFeature;
-import net.minecraft.core.Registry;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
@@ -52,8 +50,6 @@ public class FTBStructures {
 		FTBStructuresRecipeSerializers.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 
 		PROXY.init();
-
-		Registry.register(Registry.CHUNK_GENERATOR, "ftbstructures:flat_nether", FlatChunkGenerator.CODEC);
 
 		MinecraftForge.EVENT_BUS.addListener(this::worldgen);
 	}
