@@ -20,6 +20,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 
@@ -45,7 +46,7 @@ public class SmallCrateBlock extends Block {
 	);
 
 	public SmallCrateBlock() {
-		super(Properties.of(Material.WOOD).strength(5F, 6F).sound(SoundType.WOOD).noDrops().noOcclusion());
+		super(Properties.of(Material.WOOD).strength(5F, 6F).sound(SoundType.WOOD).noDrops().noOcclusion().harvestTool(ToolType.AXE));
 		registerDefaultState(defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH).setValue(BlockStateProperties.WATERLOGGED, false));
 	}
 

@@ -21,6 +21,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 
@@ -46,7 +47,7 @@ public class BarrelBlock extends Block implements SimpleWaterloggedBlock {
 	);
 
 	public BarrelBlock() {
-		super(Properties.of(Material.METAL).strength(5F, 6F).sound(SoundType.NETHERITE_BLOCK).noDrops().noOcclusion());
+		super(Properties.of(Material.METAL).strength(5F, 6F).sound(SoundType.NETHERITE_BLOCK).noDrops().noOcclusion().harvestTool(ToolType.PICKAXE));
 		registerDefaultState(defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
 	}
 
