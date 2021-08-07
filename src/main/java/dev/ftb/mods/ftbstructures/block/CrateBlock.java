@@ -10,17 +10,14 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 
@@ -41,8 +38,8 @@ public class CrateBlock extends Block {
 			box(11, 0, 0, 16, 16, 5)
 	);
 
-	public CrateBlock() {
-		super(Properties.of(Material.WOOD).strength(5F, 6F).sound(SoundType.WOOD).noDrops().noOcclusion().harvestTool(ToolType.AXE));
+	public CrateBlock(Properties properties) {
+		super(properties);
 		registerDefaultState(defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
 	}
 
@@ -85,8 +82,6 @@ public class CrateBlock extends Block {
 	public VoxelShape getBlockSupportShape(BlockState arg, BlockGetter arg2, BlockPos arg3) {
 		return Shapes.block();
 	}
-
-	// TODO: Change this to GUI
 
 	@Override
 	@Deprecated

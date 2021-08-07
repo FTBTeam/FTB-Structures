@@ -3,13 +3,14 @@ package dev.ftb.mods.ftbstructures.jei;
 import dev.ftb.mods.ftbstructures.FTBStructures;
 import dev.ftb.mods.ftbstructures.FTBStructuresData;
 import dev.ftb.mods.ftbstructures.recipe.LootRecipe;
+import dev.ftb.mods.ftbstructures.util.FTBStructuresLang;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -28,7 +29,7 @@ public class FTBStructuresJEIPlugin implements IModPlugin {
 
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(FTBStructures.MOD_ID + ":jei");
+		return new ResourceLocation(FTBStructures.MOD_ID, "jei");
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class FTBStructuresJEIPlugin implements IModPlugin {
 	@Override
 	public void registerRecipes(IRecipeRegistration r) {
 		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
-		Recipe<?> recipe = recipeManager.byKey(new ResourceLocation(FTBStructures.MOD_ID + ":loot")).orElse(null);
+		Recipe<?> recipe = recipeManager.byKey(new ResourceLocation(FTBStructures.MOD_ID, "loot")).orElse(null);
 
 		if (recipe instanceof LootRecipe) {
 			LootRecipe lr = (LootRecipe) recipe;
@@ -55,7 +56,7 @@ public class FTBStructuresJEIPlugin implements IModPlugin {
 
 					if (wrapper.output.isEmpty()) {
 						wrapper.output = new ItemStack(Items.BARRIER);
-						wrapper.output.setHoverName(new TextComponent("No Drop"));
+						wrapper.output.setHoverName(FTBStructuresLang.JEI_LOOT_NOTHING.withStyle(ChatFormatting.RED));
 					}
 
 					wrapper.weight = item.weight;

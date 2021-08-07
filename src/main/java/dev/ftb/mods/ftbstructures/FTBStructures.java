@@ -1,13 +1,14 @@
 package dev.ftb.mods.ftbstructures;
 
+import com.tterrag.registrate.Registrate;
 import dev.ftb.mods.ftbstructures.block.FTBStructuresBlocks;
-import dev.ftb.mods.ftbstructures.block.entity.FTBStructuresBlockEntities;
 import dev.ftb.mods.ftbstructures.client.FTBStructuresClient;
-import dev.ftb.mods.ftbstructures.item.FTBStructuresItems;
 import dev.ftb.mods.ftbstructures.recipe.FTBStructuresRecipeSerializers;
+import dev.ftb.mods.ftbstructures.util.FTBStructuresLang;
 import dev.ftb.mods.ftbstructures.worldgen.EndLootFeature;
 import dev.ftb.mods.ftbstructures.worldgen.NetherLootFeature;
 import dev.ftb.mods.ftbstructures.worldgen.OceanLootFeature;
+import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
@@ -19,7 +20,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * @author LatvianModder
@@ -33,21 +33,22 @@ public class FTBStructures {
 
 	public static CreativeModeTab group;
 
+	public static final LazyLoadedValue<Registrate> REGISTRATE = new LazyLoadedValue<>(() -> Registrate.create(MOD_ID));
+
 	public FTBStructures() {
 		PROXY = DistExecutor.safeRunForDist(() -> FTBStructuresClient::new, () -> FTBStructuresCommon::new);
+
+		FTBStructuresLang.init();
+		FTBStructuresBlocks.init();
+		FTBStructuresRecipeSerializers.init();
 
 		group = new CreativeModeTab(MOD_ID) {
 			@Override
 			@OnlyIn(Dist.CLIENT)
 			public ItemStack makeIcon() {
-				return new ItemStack(FTBStructuresItems.WHITE_BARREL.get());
+				return new ItemStack(FTBStructuresBlocks.RED_BARREL.get());
 			}
 		};
-
-		FTBStructuresBlocks.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
-		FTBStructuresItems.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
-		FTBStructuresBlockEntities.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
-		FTBStructuresRecipeSerializers.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 
 		PROXY.init();
 
@@ -74,5 +75,9 @@ public class FTBStructures {
 					.squared()
 			);
 		}
+	}
+
+	public static Registrate reg() {
+		return REGISTRATE.get();
 	}
 }

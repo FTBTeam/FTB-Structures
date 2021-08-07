@@ -11,17 +11,14 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 
@@ -46,8 +43,8 @@ public class BarrelBlock extends Block implements SimpleWaterloggedBlock {
 			box(1, 5, 14.5, 15, 6, 15.5)
 	);
 
-	public BarrelBlock() {
-		super(Properties.of(Material.METAL).strength(5F, 6F).sound(SoundType.NETHERITE_BLOCK).noDrops().noOcclusion().harvestTool(ToolType.PICKAXE));
+	public BarrelBlock(Properties properties) {
+		super(properties);
 		registerDefaultState(defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
 	}
 
