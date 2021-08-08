@@ -4,6 +4,8 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.ftb.mods.ftbstructures.FTBStructures;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -63,7 +65,9 @@ public class FTBStructuresBlocks {
 				.initialProperties(Material.WOOD)
 				.properties(CRATE_PROPERTIES)
 				.lang(name)
-				.simpleItem()
+				.item()
+				.group(() -> FTBStructures.group)
+				.build()
 				.blockstate(((ctx, sp) -> sp.simpleBlock(ctx.getEntry(), sp.models().getExistingFile(ctx.getId()))));
 	}
 
@@ -72,7 +76,9 @@ public class FTBStructuresBlocks {
 				.initialProperties(Material.METAL)
 				.properties(BARREL_PROPERTIES)
 				.lang(name)
-				.simpleItem()
+				.item()
+				.group(() -> FTBStructures.group)
+				.build()
 				.blockstate(((ctx, sp) -> sp.simpleBlock(ctx.getEntry(), ConfiguredModel.allYRotations(sp.models().getExistingFile(ctx.getId()), 0, false))));
 	}
 
