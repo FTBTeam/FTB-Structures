@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "ftbstructures:block/green_barrel"
+      },
+      {
+        "model": "ftbstructures:block/green_barrel",
+        "y": 90
+      },
+      {
+        "model": "ftbstructures:block/green_barrel",
+        "y": 180
+      },
+      {
+        "model": "ftbstructures:block/green_barrel",
+        "y": 270
+      }
+    ]
+  }
+}

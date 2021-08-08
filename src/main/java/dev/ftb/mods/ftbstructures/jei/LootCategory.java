@@ -3,7 +3,8 @@ package dev.ftb.mods.ftbstructures.jei;
 
 import dev.ftb.mods.ftblibrary.util.StringUtils;
 import dev.ftb.mods.ftbstructures.FTBStructures;
-import dev.ftb.mods.ftbstructures.item.FTBStructuresItems;
+import dev.ftb.mods.ftbstructures.block.FTBStructuresBlocks;
+import dev.ftb.mods.ftbstructures.util.FTBStructuresLang;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -26,14 +27,14 @@ import java.util.List;
  * @author LatvianModder
  */
 public class LootCategory implements IRecipeCategory<LootWrapper> {
-	public static final ResourceLocation UID = new ResourceLocation(FTBStructures.MOD_ID + ":loot");
+	public static final ResourceLocation UID = new ResourceLocation(FTBStructures.MOD_ID, "loot");
 
 	private final IDrawable background;
 	private final IDrawable icon;
 
 	public LootCategory(IGuiHelper guiHelper) {
-		background = guiHelper.drawableBuilder(new ResourceLocation(FTBStructures.MOD_ID + ":textures/loot_jei.png"), 0, 0, 71, 30).setTextureSize(128, 64).build();
-		icon = guiHelper.createDrawableIngredient(new ItemStack(FTBStructuresItems.CRATE.get()));
+		background = guiHelper.drawableBuilder(new ResourceLocation(FTBStructures.MOD_ID, "textures/loot_jei.png"), 0, 0, 71, 30).setTextureSize(128, 64).build();
+		icon = guiHelper.createDrawableIngredient(new ItemStack(FTBStructuresBlocks.CRATE.get()));
 	}
 
 	@Override
@@ -48,7 +49,7 @@ public class LootCategory implements IRecipeCategory<LootWrapper> {
 
 	@Override
 	public String getTitle() {
-		return I18n.get("jei." + FTBStructures.MOD_ID + ".loot");
+		return I18n.get(FTBStructuresLang.JEI_LOOT_TITLE.getKey());
 	}
 
 	@Override

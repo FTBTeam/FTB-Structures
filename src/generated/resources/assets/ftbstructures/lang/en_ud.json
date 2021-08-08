@@ -1,0 +1,15 @@
+{
+  "block.ftbstructures.black_barrel": "\u05DF\u01DD\u0279\u0279\u0250\u15FA \u029E\u0254\u0250\u05DF\u15FA",
+  "block.ftbstructures.blue_barrel": "\u05DF\u01DD\u0279\u0279\u0250\u15FA \u01DDn\u05DF\u15FA",
+  "block.ftbstructures.crate": "\u01DD\u0287\u0250\u0279\u0186",
+  "block.ftbstructures.golden_barrel": "\u05DF\u01DD\u0279\u0279\u0250\u15FA u\u01DDp\u05DFo\u2141",
+  "block.ftbstructures.green_barrel": "\u05DF\u01DD\u0279\u0279\u0250\u15FA u\u01DD\u01DD\u0279\u2141",
+  "block.ftbstructures.pulsating_crate": "\u01DD\u0287\u0250\u0279\u0186 bu\u0131\u0287\u0250s\u05DFn\u0500",
+  "block.ftbstructures.purple_barrel": "\u05DF\u01DD\u0279\u0279\u0250\u15FA \u01DD\u05DFd\u0279n\u0500",
+  "block.ftbstructures.red_barrel": "\u05DF\u01DD\u0279\u0279\u0250\u15FA p\u01DD\u1D1A",
+  "block.ftbstructures.small_crate": "\u01DD\u0287\u0250\u0279\u0186 \u05DF\u05DF\u0250\u026FS",
+  "block.ftbstructures.white_barrel": "\u05DF\u01DD\u0279\u0279\u0250\u15FA \u01DD\u0287\u0131\u0265M",
+  "itemGroup.ftbstructures": "s\u01DD\u0279n\u0287\u0254n\u0279\u0287S \u15FA\u27D8\u2132",
+  "jei.ftbstructures.loot": "\u0287oo\uA780",
+  "jei.ftbstructures.nothing": "do\u0279\u15E1 oN"
+}
