@@ -1,11 +1,11 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"particle": "ftbstructures:block/crate/bottom",
-		"bottom": "ftbstructures:block/crate/bottom",
-		"internal": "ftbstructures:block/crate/internal",
-		"side": "ftbstructures:block/crate/side",
-		"top": "ftbstructures:block/crate/top"
+		"particle": "ftbstructures:block/pulsating_crate/bottom",
+		"bottom": "ftbstructures:block/pulsating_crate/bottom",
+		"internal": "ftbstructures:block/pulsating_crate/internal",
+		"side": "ftbstructures:block/pulsating_crate/side",
+		"top": "ftbstructures:block/pulsating_crate/top"
 	},
 	"elements": [
 		{
