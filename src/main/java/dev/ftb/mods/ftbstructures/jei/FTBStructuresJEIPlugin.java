@@ -49,10 +49,10 @@ public class FTBStructuresJEIPlugin implements IModPlugin {
 			for (FTBStructuresData.Loot loot : lr.loot) {
 				ItemStack in = new ItemStack(loot.item);
 
-				for (FTBStructuresData.WeightedItem item : loot.items) {
+				for (FTBStructuresData.WeightedList<ItemStack>.Entry item : loot.items.entries) {
 					LootWrapper wrapper = new LootWrapper();
 					wrapper.input = in;
-					wrapper.output = item.item;
+					wrapper.output = item.result;
 
 					if (wrapper.output.isEmpty()) {
 						wrapper.output = new ItemStack(Items.BARRIER);

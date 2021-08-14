@@ -23,6 +23,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author LatvianModder
@@ -36,6 +38,7 @@ public class FTBStructures {
 
 	public static CreativeModeTab group;
 
+	public static final Logger LOGGER = LogManager.getLogger();
 	public static final LazyLoadedValue<Registrate> REGISTRATE = new LazyLoadedValue<>(() -> Registrate.create(MOD_ID));
 
 	public FTBStructures() {

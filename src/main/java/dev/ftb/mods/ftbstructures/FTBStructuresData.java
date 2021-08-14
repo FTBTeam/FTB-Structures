@@ -6,6 +6,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 import javax.annotation.Nullable;
@@ -71,16 +72,53 @@ public class FTBStructuresData {
 		}
 	}
 
-	public static class WeightedItem {
-		public ItemStack item;
-		public int weight;
+	public static class WeightedList<U> {
+		public final List<Entry> entries = new ArrayList<>();
+		public int totalWeight = 0;
+
+		public WeightedList<U> add(U object, int i) {
+			this.entries.add(new Entry(object, i));
+			totalWeight += i;
+			return this;
+		}
+
+		public class Entry {
+			public U result;
+			public int weight;
+
+			public Entry(U result, int weight) {
+				this.result = result;
+				this.weight = weight;
+			}
+		}
+
+		public U getOne(Random random, U def) {
+			if (totalWeight <= 0) {
+				return def;
+			}
+
+			int number = random.nextInt(totalWeight) + 1;
+			int currentWeight = 0;
+
+			for (Entry entry : entries) {
+				if (entry.weight > 0) {
+					currentWeight += entry.weight;
+
+					if (currentWeight >= number) {
+						return entry.result;
+					}
+				}
+			}
+
+			return def;
+		}
 	}
 
 	public static class Loot {
 		public Item item = Items.AIR;
 		public int minRolls = 1;
 		public int maxRolls = 1;
-		public final List<WeightedItem> items = new ArrayList<>();
+		public final WeightedList<ItemStack> items = new WeightedList<>();
 		public int totalWeight = 0;
 
 		public Loot() {
@@ -94,52 +132,27 @@ public class FTBStructuresData {
 			int s = buffer.readVarInt();
 
 			for (int i = 0; i < s; i++) {
-				WeightedItem wi = new WeightedItem();
-				wi.item = buffer.readItem();
-				wi.weight = buffer.readVarInt();
-				totalWeight += wi.weight;
-				items.add(wi);
+				add(buffer.readItem(), buffer.readVarInt());
 			}
 		}
 
 		public void add(ItemStack item, int weight) {
-			WeightedItem i = new WeightedItem();
-			i.item = item;
-			i.weight = Math.max(0, weight);
-			totalWeight += i.weight;
-			items.add(i);
+			items.add(item, weight);
 		}
 
 		public ItemStack randomItem(Random random) {
-			if (totalWeight <= 0) {
-				return ItemStack.EMPTY;
-			}
-
-			int number = random.nextInt(totalWeight) + 1;
-			int currentWeight = 0;
-
-			for (WeightedItem item : items) {
-				if (item.weight > 0) {
-					currentWeight += item.weight;
-
-					if (currentWeight >= number) {
-						return item.item;
-					}
-				}
-			}
-
-			return ItemStack.EMPTY;
+			return items.getOne(random, ItemStack.EMPTY);
 		}
 
 		public void write(FriendlyByteBuf buffer) {
 			buffer.writeVarInt(Item.getId(item));
 			buffer.writeVarInt(minRolls);
 			buffer.writeVarInt(maxRolls);
-			buffer.writeVarInt(items.size());
+			buffer.writeVarInt(items.entries.size());
 
-			for (WeightedItem wi : items) {
-				buffer.writeItem(wi.item);
-				buffer.writeVarInt(wi.weight);
+			for (WeightedList<ItemStack>.Entry entry : items.entries) {
+				buffer.writeItem(entry.result);
+				buffer.writeVarInt(entry.weight);
 			}
 		}
 	}
@@ -153,12 +166,14 @@ public class FTBStructuresData {
 	public static StructureGroup netherStructures = new StructureGroup();
 	public static StructureGroup endStructures = new StructureGroup();
 	public static final Map<Item, Loot> lootMap = new LinkedHashMap<>();
+	public static final Map<String, WeightedList<Block>> palettes = new LinkedHashMap<>();
 
 	public static void reset() {
 		oceanStructures = new StructureGroup();
 		netherStructures = new StructureGroup();
 		endStructures = new StructureGroup();
 		lootMap.clear();
+		palettes.clear();
 	}
 
 	public static void setLoot(Item item, Consumer<Loot> consumer) {
@@ -166,6 +181,12 @@ public class FTBStructuresData {
 		loot.item = item;
 		consumer.accept(loot);
 		lootMap.put(item, loot);
+	}
+
+	public static void addPalette(String name, Consumer<WeightedList<Block>> consumer) {
+		WeightedList<Block> blocks = new WeightedList<>();
+		consumer.accept(blocks);
+		palettes.put(name, blocks);
 	}
 
 	public static List<ItemStack> getItems(Item item, Random random) {
@@ -183,10 +204,10 @@ public class FTBStructuresData {
 				}
 			}
 
-			for (WeightedItem is : loot.items) {
-				if (!is.item.isEmpty()) {
+			for (WeightedList<ItemStack>.Entry is : loot.items.entries) {
+				if (!is.result.isEmpty()) {
 					if (is.weight == 0) {
-						stacks.add(is.item.copy());
+						stacks.add(is.result.copy());
 					}
 				}
 			}
