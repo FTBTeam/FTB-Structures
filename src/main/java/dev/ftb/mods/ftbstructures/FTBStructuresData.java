@@ -6,7 +6,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 import javax.annotation.Nullable;
@@ -166,7 +165,7 @@ public class FTBStructuresData {
 	public static StructureGroup netherStructures = new StructureGroup();
 	public static StructureGroup endStructures = new StructureGroup();
 	public static final Map<Item, Loot> lootMap = new LinkedHashMap<>();
-	public static final Map<String, WeightedList<Block>> palettes = new LinkedHashMap<>();
+	public static final Map<String, WeightedList<String>> palettes = new LinkedHashMap<>();
 
 	public static void reset() {
 		oceanStructures = new StructureGroup();
@@ -183,8 +182,8 @@ public class FTBStructuresData {
 		lootMap.put(item, loot);
 	}
 
-	public static void addPalette(String name, Consumer<WeightedList<Block>> consumer) {
-		WeightedList<Block> blocks = new WeightedList<>();
+	public static void addPalette(String name, Consumer<WeightedList<String>> consumer) {
+		WeightedList<String> blocks = new WeightedList<>();
 		consumer.accept(blocks);
 		palettes.put(name, blocks);
 	}

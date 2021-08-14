@@ -1,6 +1,10 @@
 package dev.ftb.mods.ftbstructures.worldgen;
 
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import dev.ftb.mods.ftbstructures.FTBStructures;
 import dev.ftb.mods.ftbstructures.FTBStructuresData;
+import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
@@ -52,7 +56,16 @@ public class OceanLootFeature extends Feature<NoneFeatureConfiguration> {
 			if (info.nbt != null && StructureMode.valueOf(info.nbt.getString("mode")) == StructureMode.DATA) {
 				String id = info.nbt.getString("metadata");
 				if (FTBStructuresData.palettes.containsKey(id)) {
-					BlockState state = FTBStructuresData.palettes.get(id).getOne(random, Blocks.AIR).defaultBlockState();
+					BlockState state;
+					BlockStateParser parser = new BlockStateParser(new StringReader(FTBStructuresData.palettes.get(id).getOne(random, "")), false);
+
+					try {
+						parser.parse(false);
+						state = parser.getState();
+					} catch (CommandSyntaxException e) {
+						FTBStructures.LOGGER.warn("Error parsing block state: {}", e.getRawMessage());
+						state = Blocks.AIR.defaultBlockState();
+					}
 					level.setBlock(pos, state, 3);
 				}
 			}
