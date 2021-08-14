@@ -66,7 +66,7 @@ public class OceanLootFeature extends Feature<NoneFeatureConfiguration> {
 						FTBStructures.LOGGER.warn("Error parsing block state: {}", e.getRawMessage());
 						state = Blocks.AIR.defaultBlockState();
 					}
-					level.setBlock(pos, state, 3);
+					level.setBlock(info.pos, state, 3);
 				}
 			}
 		}
