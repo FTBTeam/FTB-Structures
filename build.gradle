@@ -34,6 +34,8 @@ loom {
 	launches {
 		data {
 			arg "--existing", file("src/main/resources").absolutePath
+			arg "--assetIndex", "1.16"
+			arg "--assetsDir", (ENV.GRADLE_USER_HOME ?: "${System.getProperty("user.home")}/.gradle") + "/caches/fabric-loom/assets"
 		}
 	}
 }
