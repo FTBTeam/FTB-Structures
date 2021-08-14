@@ -6,8 +6,11 @@ import dev.ftb.mods.ftbstructures.client.FTBStructuresClient;
 import dev.ftb.mods.ftbstructures.recipe.FTBStructuresRecipeSerializers;
 import dev.ftb.mods.ftbstructures.util.FTBStructuresLang;
 import dev.ftb.mods.ftbstructures.worldgen.EndLootFeature;
+import dev.ftb.mods.ftbstructures.worldgen.IslandGridBiomeSource;
 import dev.ftb.mods.ftbstructures.worldgen.NetherLootFeature;
 import dev.ftb.mods.ftbstructures.worldgen.OceanLootFeature;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -53,6 +56,8 @@ public class FTBStructures {
 		PROXY.init();
 
 		MinecraftForge.EVENT_BUS.addListener(this::worldgen);
+
+		Registry.register(Registry.BIOME_SOURCE, new ResourceLocation("ftbstructures:island_grid"), IslandGridBiomeSource.CODEC);
 	}
 
 	private void worldgen(BiomeLoadingEvent event) {
