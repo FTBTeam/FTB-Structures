@@ -36,7 +36,7 @@ public class IslandGridBiomeSource extends BiomeSource {
 	}
 
 	public static final Codec<IslandGridBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.INT.fieldOf("regionDistance").forGetter(o -> o.regionDistance),
+			Codec.INT.fieldOf("regionRadius").forGetter(o -> o.regionRadius),
 			Biome.CODEC.fieldOf("islandBiome").forGetter(o -> o.islandBiome),
 			BiomeEntry.CODEC.listOf().fieldOf("biomes").forGetter(o -> o.biomes)
 	).apply(instance, IslandGridBiomeSource::new));
@@ -52,16 +52,22 @@ public class IslandGridBiomeSource extends BiomeSource {
 		return list.stream();
 	}
 
+	public final int regionRadius;
 	public final int regionDistance;
 	public final Supplier<Biome> islandBiome;
 	public final List<BiomeEntry> biomes;
+	private final BiomeEntry[] biomeArray;
+	private final Supplier<Biome> defaultBiome;
 
 	protected IslandGridBiomeSource(int r, Supplier<Biome> i, List<BiomeEntry> b) {
 		super(joinBiomes(i, b));
-		regionDistance = r;
+		regionRadius = r;
+		regionDistance = regionRadius * 2 + 1;
 		islandBiome = i;
 		biomes = new ArrayList<>(b);
 		biomes.sort(null);
+		biomeArray = biomes.toArray(new BiomeEntry[0]);
+		defaultBiome = biomeArray.length == 0 ? islandBiome : biomeArray[0].biome;
 	}
 
 	@Override
@@ -76,16 +82,24 @@ public class IslandGridBiomeSource extends BiomeSource {
 
 	@Override
 	public Biome getNoiseBiome(int sx, int sy, int sz) {
-		int bx = sx << 2;
-		int bz = sz << 2;
+		int rx = sx >> 7;
+		int rz = sz >> 7;
 
-		if (((sx >> 7) % regionDistance == 0) && ((sz >> 7) % regionDistance == 0)) {
-			double distSq = MathUtils.distSq(bx & 511, bz & 511, 256, 256);
+		if (rx >= -regionRadius && rz >= -regionRadius && rx <= regionRadius && rz <= regionRadius) {
+			return defaultBiome.get();
+		}
 
-			for (BiomeEntry entry : biomes) {
-				if (distSq >= entry.distanceSq) {
-					return entry.biome.get();
-				}
+		int bx = MathUtils.mod((sx << 2) + regionRadius * 512, regionDistance * 512);
+		int bz = MathUtils.mod((sz << 2) + regionRadius * 512, regionDistance * 512);
+
+		int cx = regionRadius * 512 + 256;
+		int cz = regionRadius * 512 + 256;
+
+		double distSq = MathUtils.distSq(bx, bz, cx, cz);
+
+		for (BiomeEntry entry : biomeArray) {
+			if (distSq >= entry.distanceSq) {
+				return entry.biome.get();
 			}
 		}
 
