@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeSet;
 import java.util.function.Consumer;
 
 public class FTBStructuresData {
@@ -71,23 +72,28 @@ public class FTBStructuresData {
 		}
 	}
 
-	public static class WeightedList<U> {
-		public final List<Entry> entries = new ArrayList<>();
+	public static class WeightedSet<U> extends TreeSet<WeightedSet.Entry<U>> {
 		public int totalWeight = 0;
 
-		public WeightedList<U> add(U object, int i) {
-			this.entries.add(new Entry(object, i));
+		public WeightedSet<U> add(U object, int i) {
+			add(new Entry<>(object, i));
 			totalWeight += i;
 			return this;
 		}
 
-		public class Entry {
+		public static class Entry<U> implements Comparable<Entry<U>> {
 			public U result;
 			public int weight;
 
 			public Entry(U result, int weight) {
 				this.result = result;
 				this.weight = weight;
+			}
+
+			@Override
+			public int compareTo(Entry<U> o) {
+				int w = weight - o.weight;
+				return w == 0 ? Integer.compare(result.hashCode(), o.result.hashCode()) : w;
 			}
 		}
 
@@ -99,7 +105,7 @@ public class FTBStructuresData {
 			int number = random.nextInt(totalWeight) + 1;
 			int currentWeight = 0;
 
-			for (Entry entry : entries) {
+			for (Entry<U> entry : this) {
 				if (entry.weight > 0) {
 					currentWeight += entry.weight;
 
@@ -117,7 +123,7 @@ public class FTBStructuresData {
 		public Item item = Items.AIR;
 		public int minRolls = 1;
 		public int maxRolls = 1;
-		public final WeightedList<ItemStack> items = new WeightedList<>();
+		public final WeightedSet<ItemStack> items = new WeightedSet<>();
 		public int totalWeight = 0;
 
 		public Loot() {
@@ -147,9 +153,9 @@ public class FTBStructuresData {
 			buffer.writeVarInt(Item.getId(item));
 			buffer.writeVarInt(minRolls);
 			buffer.writeVarInt(maxRolls);
-			buffer.writeVarInt(items.entries.size());
+			buffer.writeVarInt(items.size());
 
-			for (WeightedList<ItemStack>.Entry entry : items.entries) {
+			for (WeightedSet.Entry<ItemStack> entry : items) {
 				buffer.writeItem(entry.result);
 				buffer.writeVarInt(entry.weight);
 			}
@@ -165,7 +171,7 @@ public class FTBStructuresData {
 	public static StructureGroup netherStructures = new StructureGroup();
 	public static StructureGroup endStructures = new StructureGroup();
 	public static final Map<Item, Loot> lootMap = new LinkedHashMap<>();
-	public static final Map<String, WeightedList<String>> palettes = new LinkedHashMap<>();
+	public static final Map<String, WeightedSet<String>> palettes = new LinkedHashMap<>();
 
 	public static void reset() {
 		oceanStructures = new StructureGroup();
@@ -182,8 +188,8 @@ public class FTBStructuresData {
 		lootMap.put(item, loot);
 	}
 
-	public static void addPalette(String name, Consumer<WeightedList<String>> consumer) {
-		WeightedList<String> blocks = new WeightedList<>();
+	public static void addPalette(String name, Consumer<WeightedSet<String>> consumer) {
+		WeightedSet<String> blocks = new WeightedSet<>();
 		consumer.accept(blocks);
 		palettes.put(name, blocks);
 	}
@@ -203,7 +209,7 @@ public class FTBStructuresData {
 				}
 			}
 
-			for (WeightedList<ItemStack>.Entry is : loot.items.entries) {
+			for (WeightedSet.Entry<ItemStack> is : loot.items) {
 				if (!is.result.isEmpty()) {
 					if (is.weight == 0) {
 						stacks.add(is.result.copy());

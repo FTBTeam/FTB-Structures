@@ -1,4 +1,4 @@
-package dev.ftb.mods.ftbstructures.jei;
+package dev.ftb.mods.ftbstructures.integration.jei;
 
 import dev.ftb.mods.ftbstructures.FTBStructures;
 import dev.ftb.mods.ftbstructures.FTBStructuresData;
@@ -44,28 +44,7 @@ public class FTBStructuresJEIPlugin implements IModPlugin {
 
 		if (recipe instanceof LootRecipe) {
 			LootRecipe lr = (LootRecipe) recipe;
-			List<LootWrapper> recipes = new ArrayList<>();
-
-			for (FTBStructuresData.Loot loot : lr.loot) {
-				ItemStack in = new ItemStack(loot.item);
-
-				for (FTBStructuresData.WeightedList<ItemStack>.Entry item : loot.items.entries) {
-					LootWrapper wrapper = new LootWrapper();
-					wrapper.input = in;
-					wrapper.output = item.result;
-
-					if (wrapper.output.isEmpty()) {
-						wrapper.output = new ItemStack(Items.BARRIER);
-						wrapper.output.setHoverName(FTBStructuresLang.JEI_LOOT_NOTHING.withStyle(ChatFormatting.RED));
-					}
-
-					wrapper.weight = item.weight;
-					wrapper.totalWeight = loot.totalWeight;
-					recipes.add(wrapper);
-				}
-			}
-
-			r.addRecipes(recipes, LootCategory.UID);
+			r.addRecipes(lr.loot, LootCategory.ID);
 		}
 	}
 
