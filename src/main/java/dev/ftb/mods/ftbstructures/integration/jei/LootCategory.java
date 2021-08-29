@@ -119,32 +119,34 @@ public class LootCategory implements IRecipeCategory<Loot> {
 			int min = wrapper.index * 21;
 			int max = Math.min(min + 21, size);
 
-			if (max < size) {
-				if (mouseX >= 4 && mouseX <= 20 && mouseY >= 56 && mouseY <= 72) {
-					down2.draw(ms, 4, 56);
-				} else {
-					down.draw(ms, 4, 56);
+			if (wrapper.maxIndex() != 0) {
+				if (max < size) {
+					if (mouseX >= 4 && mouseX <= 20 && mouseY >= 56 && mouseY <= 72) {
+						down2.draw(ms, 4, 56);
+					} else {
+						down.draw(ms, 4, 56);
+					}
 				}
-			}
 
-			if (min > 0) {
-				if (mouseX >= 4 && mouseX <= 20 && mouseY >= 24 && mouseY <= 40) {
-					up2.draw(ms, 4, 24);
-				} else {
-					up.draw(ms, 4, 24);
+				if (min > 0) {
+					if (mouseX >= 4 && mouseX <= 20 && mouseY >= 24 && mouseY <= 40) {
+						up2.draw(ms, 4, 24);
+					} else {
+						up.draw(ms, 4, 24);
+					}
 				}
+
+				String page = (wrapper.index + 1) + "/" + (wrapper.maxIndex() + 1);
+
+				Font font = Minecraft.getInstance().font;
+				float width = font.width(page);
+
+				ms.pushPose();
+				ms.translate(12, 44, 100);
+				ms.scale(1, 1, 8000F);
+				font.draw(ms, page, (-width / 2) + 1, 0, 0x555555);
+				ms.popPose();
 			}
-
-			String page = (wrapper.index + 1) + "/" + (wrapper.maxIndex() + 1);
-
-			Font font = Minecraft.getInstance().font;
-			float width = font.width(page);
-
-			ms.pushPose();
-			ms.translate(12, 44, 100);
-			ms.scale(1, 1, 8000F);
-			font.draw(ms, page, (-width / 2) + 1, 0, 0x555555);
-			ms.popPose();
 
 			IGuiItemStackGroup stacks = wrapper.layout.getItemStacks();
 
