@@ -4,6 +4,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.ftb.mods.ftbstructures.FTBStructures;
 import dev.ftb.mods.ftbstructures.FTBStructuresData;
+import dev.ftb.mods.ftbstructures.worldgen.processor.DeWaterloggingProcessor;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
@@ -13,12 +14,15 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.StructureMode;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 import java.util.Random;
 
 public enum StructureUtil {
 	;
+
+	public static final StructureProcessorType<DeWaterloggingProcessor> WATERLOG_B_GONE = StructureProcessorType.register(FTBStructures.MOD_ID + ":waterlog_b_gone", DeWaterloggingProcessor.CODEC);
 
 	public static boolean placeWithPlaceholders(WorldGenLevel level, FTBStructuresData.Structure structure, BlockPos pos, Random random) {
 		StructureTemplate template = structure.getTemplate(level);
@@ -30,6 +34,10 @@ public enum StructureUtil {
 		settings.setRotationPivot(new BlockPos(sx / 2, 0, sz / 2));
 		settings.setRotation(Rotation.getRandom(random));
 		settings.setMirror(Mirror.values()[random.nextInt(3)]);
+
+		if (structure.oceanFloor) {
+			settings.addProcessor(new DeWaterloggingProcessor());
+		}
 
 		BlockPos templatePosition = new BlockPos(pos.getX() - sx / 2, pos.getY() + structure.y, pos.getZ() - sz / 2);
 		template.placeInWorld(level, templatePosition, settings, random);
@@ -54,6 +62,10 @@ public enum StructureUtil {
 		}
 
 		return true;
+	}
+
+	public static void init() {
+
 	}
 
 }

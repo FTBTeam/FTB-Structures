@@ -5,6 +5,7 @@ import dev.ftb.mods.ftbstructures.block.FTBStructuresBlocks;
 import dev.ftb.mods.ftbstructures.client.FTBStructuresClient;
 import dev.ftb.mods.ftbstructures.recipe.FTBStructuresRecipeSerializers;
 import dev.ftb.mods.ftbstructures.util.FTBStructuresLang;
+import dev.ftb.mods.ftbstructures.util.StructureUtil;
 import dev.ftb.mods.ftbstructures.worldgen.EndLootFeature;
 import dev.ftb.mods.ftbstructures.worldgen.IslandGridBiomeSource;
 import dev.ftb.mods.ftbstructures.worldgen.NetherLootFeature;
@@ -47,6 +48,8 @@ public class FTBStructures {
 		FTBStructuresLang.init();
 		FTBStructuresBlocks.init();
 		FTBStructuresRecipeSerializers.init();
+
+		StructureUtil.init();
 
 		group = new CreativeModeTab(MOD_ID) {
 			@Override
