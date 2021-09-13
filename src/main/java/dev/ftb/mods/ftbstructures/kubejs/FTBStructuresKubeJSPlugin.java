@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class FTBStructuresKubeJSPlugin extends KubeJSPlugin {
 	@Override
-	public void init() {
-		RegisterRecipeHandlersEvent.EVENT.register(event -> event.ignore(new ResourceLocation(FTBStructures.MOD_ID, "loot")));
+	public void addRecipes(RegisterRecipeHandlersEvent event) {
+		event.ignore(new ResourceLocation(FTBStructures.MOD_ID, "loot"));
 	}
 }
