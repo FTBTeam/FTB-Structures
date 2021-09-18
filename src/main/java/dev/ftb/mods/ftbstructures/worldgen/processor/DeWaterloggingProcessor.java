@@ -1,7 +1,7 @@
 package dev.ftb.mods.ftbstructures.worldgen.processor;
 
 import com.mojang.serialization.Codec;
-import dev.ftb.mods.ftbstructures.util.StructureUtil;
+import dev.ftb.mods.ftbstructures.worldgen.FTBStructuresStructures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
@@ -19,8 +19,7 @@ public class DeWaterloggingProcessor extends StructureProcessor {
 	public static final Codec<DeWaterloggingProcessor> CODEC = Codec.unit(DeWaterloggingProcessor::new);
 
 	@Override
-	public StructureBlockInfo process(LevelReader level, BlockPos pos, BlockPos pos2,
-									  StructureBlockInfo info, StructureBlockInfo info2, StructurePlaceSettings settings, StructureTemplate template) {
+	public StructureBlockInfo process(LevelReader level, BlockPos pos, BlockPos pos2, StructureBlockInfo info, StructureBlockInfo info2, StructurePlaceSettings settings, StructureTemplate template) {
 		// thanks to TelepathicGrunt for making me aware of this; apparently there is a vanilla bug
 		// that makes it so that water sources in both the structure and the world will spread into
 		// waterloggable blocks even if `shouldKeepLiquids` is false in the structure settings
@@ -52,6 +51,6 @@ public class DeWaterloggingProcessor extends StructureProcessor {
 
 	@Override
 	protected StructureProcessorType<?> getType() {
-		return StructureUtil.WATERLOG_B_GONE;
+		return FTBStructuresStructures.WATERLOG_B_GONE;
 	}
 }

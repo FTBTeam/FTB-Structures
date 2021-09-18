@@ -5,21 +5,18 @@ import dev.ftb.mods.ftbstructures.block.FTBStructuresBlocks;
 import dev.ftb.mods.ftbstructures.client.FTBStructuresClient;
 import dev.ftb.mods.ftbstructures.recipe.FTBStructuresRecipeSerializers;
 import dev.ftb.mods.ftbstructures.util.FTBStructuresLang;
-import dev.ftb.mods.ftbstructures.util.StructureUtil;
-import dev.ftb.mods.ftbstructures.worldgen.EndLootFeature;
+import dev.ftb.mods.ftbstructures.worldgen.FTBStructuresStructures;
 import dev.ftb.mods.ftbstructures.worldgen.IslandGridBiomeSource;
-import dev.ftb.mods.ftbstructures.worldgen.NetherLootFeature;
-import dev.ftb.mods.ftbstructures.worldgen.OceanLootFeature;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -48,8 +45,7 @@ public class FTBStructures {
 		FTBStructuresLang.init();
 		FTBStructuresBlocks.init();
 		FTBStructuresRecipeSerializers.init();
-
-		StructureUtil.init();
+		FTBStructuresStructures.init();
 
 		group = new CreativeModeTab(MOD_ID) {
 			@Override
@@ -67,24 +63,15 @@ public class FTBStructures {
 	}
 
 	private void worldgen(BiomeLoadingEvent event) {
-		if (event.getCategory() == Biome.BiomeCategory.OCEAN) {
-			event.getGeneration().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, new OceanLootFeature()
-					.configured(NoneFeatureConfiguration.INSTANCE)
-					.chance(FTBStructuresData.oceanWorldgenChance)
-					.squared()
-			);
-		} else if (event.getCategory() == Biome.BiomeCategory.NETHER) {
-			event.getGeneration().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, new NetherLootFeature()
-					.configured(NoneFeatureConfiguration.INSTANCE)
-					.chance(FTBStructuresData.netherWorldgenChance)
-					.squared()
-			);
-		} else if (event.getCategory() == Biome.BiomeCategory.THEEND) {
-			event.getGeneration().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, new EndLootFeature()
-					.configured(NoneFeatureConfiguration.INSTANCE)
-					.chance(FTBStructuresData.endWorldgenChance)
-					.squared()
-			);
+		ResourceKey<Biome> key = event.getName() == null ? null : ResourceKey.create(Registry.BIOME_REGISTRY, event.getName());
+
+		if (event.getCategory() == Biome.BiomeCategory.NETHER || key != null && BiomeDictionary.hasType(key, BiomeDictionary.Type.NETHER)) {
+			event.getGeneration().addStructureStart(FTBStructuresStructures.NETHER_CONFIGURED_FEATURE);
+		} else if (event.getCategory() == Biome.BiomeCategory.THEEND || key != null && BiomeDictionary.hasType(key, BiomeDictionary.Type.END)) {
+			event.getGeneration().addStructureStart(FTBStructuresStructures.END_CONFIGURED_FEATURE);
+		} else if (event.getCategory() == Biome.BiomeCategory.OCEAN || key != null && BiomeDictionary.hasType(key, BiomeDictionary.Type.OCEAN)) {
+			event.getGeneration().addStructureStart(FTBStructuresStructures.OCEAN_CONFIGURED_FEATURE);
+
 		}
 	}
 

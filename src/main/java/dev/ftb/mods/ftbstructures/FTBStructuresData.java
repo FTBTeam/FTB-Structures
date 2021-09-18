@@ -1,12 +1,16 @@
 package dev.ftb.mods.ftbstructures;
 
+import com.mojang.brigadier.StringReader;
+import net.minecraft.commands.arguments.blocks.BlockStateParser;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -14,36 +18,80 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
 public class FTBStructuresData {
 	public static class Structure {
-		public String id = "";
+		public final StructureGroup group;
+		public ResourceLocation id = new ResourceLocation("minecraft", "unknown");
 		public int y = -1;
 		public boolean oceanFloor = false;
 		public int weight = 1;
 		public int minY = 70;
 		public int maxY = 100;
 
-		private StructureTemplate template;
+		public Structure(StructureGroup g) {
+			group = g;
+		}
 
-		public StructureTemplate getTemplate(WorldGenLevel level) {
-			if (template == null) {
-				template = level.getLevel().getStructureManager().getOrCreate(new ResourceLocation(id));
+		public Structure(CompoundTag tag) {
+			int tp = tag.getByte("SGType");
+			group = tp == 0 ? FTBStructuresData.oceanStructures : tp == 1 ? FTBStructuresData.netherStructures : FTBStructuresData.endStructures;
+			id = new ResourceLocation(tag.getString("Template"));
+
+			if (tag.contains("SY")) {
+				y = tag.getInt("SY");
 			}
 
-			return template;
+			oceanFloor = tag.getBoolean("OceanFloor");
+
+			if (tag.contains("SMinY")) {
+				minY = tag.getInt("SminY");
+			}
+
+			if (tag.contains("SMaxY")) {
+				maxY = tag.getInt("SMaxY");
+			}
+		}
+
+		public void write(CompoundTag tag) {
+			tag.putByte("SGType", (byte) group.index);
+			tag.putString("Template", id.toString());
+
+			if (y != -1) {
+				tag.putInt("SY", y);
+			}
+
+			if (oceanFloor) {
+				tag.putBoolean("OceanFloor", true);
+			}
+
+			if (minY != 70) {
+				tag.putInt("SMinY", minY);
+			}
+
+			if (maxY != 100) {
+				tag.putInt("SMaxY", maxY);
+			}
 		}
 	}
 
-	public static class StructureGroup {
-		private int totalWeight = 0;
-		private final List<Structure> structures = new ArrayList<>();
+	public static abstract class StructureGroup {
+		public final int index;
+		private int totalWeight;
+		private final List<Structure> structures;
+
+		public StructureGroup(int i) {
+			index = i;
+			totalWeight = 0;
+			structures = new ArrayList<>();
+		}
 
 		public void add(Consumer<Structure> consumer) {
-			Structure s = new Structure();
+			Structure s = new Structure(this);
 			consumer.accept(s);
 			totalWeight += s.weight;
 			structures.add(s);
@@ -70,6 +118,13 @@ public class FTBStructuresData {
 
 			return structures.get(random.nextInt(structures.size()));
 		}
+
+		public void reset() {
+			totalWeight = 0;
+			structures.clear();
+		}
+
+		public abstract int getY(WorldGenLevel level, int x, int z, Random random, Structure structure);
 	}
 
 	public static class WeightedSet<U> extends TreeSet<WeightedSet.Entry<U>> {
@@ -124,7 +179,6 @@ public class FTBStructuresData {
 		public int minRolls = 1;
 		public int maxRolls = 1;
 		public final WeightedSet<ItemStack> items = new WeightedSet<>();
-		public int totalWeight = 0;
 
 		public Loot() {
 		}
@@ -162,21 +216,36 @@ public class FTBStructuresData {
 		}
 	}
 
-	public static int oceanWorldgenChance = 1;
-	public static int netherWorldgenChance = 1;
-	public static int endWorldgenChance = 1;
 	public static int netherLavaLevel = 32;
 
-	public static StructureGroup oceanStructures = new StructureGroup();
-	public static StructureGroup netherStructures = new StructureGroup();
-	public static StructureGroup endStructures = new StructureGroup();
+	public static final StructureGroup oceanStructures = new StructureGroup(0) {
+		@Override
+		public int getY(WorldGenLevel level, int x, int z, Random random, Structure structure) {
+			return level.getHeight(structure.oceanFloor ? Heightmap.Types.OCEAN_FLOOR_WG : Heightmap.Types.WORLD_SURFACE_WG, x, z) + structure.y;
+		}
+	};
+
+	public static final StructureGroup netherStructures = new StructureGroup(1) {
+		@Override
+		public int getY(WorldGenLevel level, int x, int z, Random random, Structure structure) {
+			return FTBStructuresData.netherLavaLevel + structure.y;
+		}
+	};
+
+	public static final StructureGroup endStructures = new StructureGroup(2) {
+		@Override
+		public int getY(WorldGenLevel level, int x, int z, Random random, Structure structure) {
+			return structure.minY + random.nextInt(structure.maxY - structure.minY + 1);
+		}
+	};
+
 	public static final Map<Item, Loot> lootMap = new LinkedHashMap<>();
-	public static final Map<String, WeightedSet<String>> palettes = new LinkedHashMap<>();
+	public static final Map<String, WeightedSet<BlockState>> palettes = new LinkedHashMap<>();
 
 	public static void reset() {
-		oceanStructures = new StructureGroup();
-		netherStructures = new StructureGroup();
-		endStructures = new StructureGroup();
+		oceanStructures.reset();
+		netherStructures.reset();
+		endStructures.reset();
 		lootMap.clear();
 		palettes.clear();
 	}
@@ -191,7 +260,19 @@ public class FTBStructuresData {
 	public static void addPalette(String name, Consumer<WeightedSet<String>> consumer) {
 		WeightedSet<String> blocks = new WeightedSet<>();
 		consumer.accept(blocks);
-		palettes.put(name, blocks);
+		WeightedSet<BlockState> states = new WeightedSet<>();
+
+		for (WeightedSet.Entry<String> entry : blocks) {
+			try {
+				BlockStateParser parser = new BlockStateParser(new StringReader(entry.result), false);
+				parser.parse(false);
+				states.add(Objects.requireNonNull(parser.getState()), entry.weight);
+			} catch (Exception ex) {
+				throw new RuntimeException("Invalid state: " + entry.result);
+			}
+		}
+
+		palettes.put(name, states);
 	}
 
 	public static List<ItemStack> getItems(Item item, Random random) {
