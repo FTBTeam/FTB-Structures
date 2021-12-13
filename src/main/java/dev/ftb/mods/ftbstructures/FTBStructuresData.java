@@ -1,6 +1,7 @@
 package dev.ftb.mods.ftbstructures;
 
 import com.mojang.brigadier.StringReader;
+import dev.ftb.mods.ftbstructures.util.StateWithData;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -9,7 +10,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import javax.annotation.Nullable;
@@ -240,7 +240,7 @@ public class FTBStructuresData {
 	};
 
 	public static final Map<Item, Loot> lootMap = new LinkedHashMap<>();
-	public static final Map<String, WeightedSet<BlockState>> palettes = new LinkedHashMap<>();
+	public static final Map<String, WeightedSet<StateWithData>> palettes = new LinkedHashMap<>();
 
 	public static void reset() {
 		oceanStructures.reset();
@@ -260,13 +260,13 @@ public class FTBStructuresData {
 	public static void addPalette(String name, Consumer<WeightedSet<String>> consumer) {
 		WeightedSet<String> blocks = new WeightedSet<>();
 		consumer.accept(blocks);
-		WeightedSet<BlockState> states = new WeightedSet<>();
+		WeightedSet<StateWithData> states = new WeightedSet<>();
 
 		for (WeightedSet.Entry<String> entry : blocks) {
 			try {
 				BlockStateParser parser = new BlockStateParser(new StringReader(entry.result), false);
 				parser.parse(false);
-				states.add(Objects.requireNonNull(parser.getState()), entry.weight);
+				states.add(new StateWithData(Objects.requireNonNull(parser.getState()), parser.getNbt()), entry.weight);
 			} catch (Exception ex) {
 				throw new RuntimeException("Invalid state: " + entry.result);
 			}
