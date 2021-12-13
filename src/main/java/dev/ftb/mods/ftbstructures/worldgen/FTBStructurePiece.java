@@ -3,6 +3,7 @@ package dev.ftb.mods.ftbstructures.worldgen;
 import com.google.common.collect.ImmutableList;
 import dev.ftb.mods.ftbstructures.FTBStructures;
 import dev.ftb.mods.ftbstructures.FTBStructuresData;
+import dev.ftb.mods.ftbstructures.util.StateWithData;
 import dev.ftb.mods.ftbstructures.worldgen.processor.DeWaterloggingProcessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
@@ -69,10 +70,22 @@ public class FTBStructurePiece extends TemplateStructurePiece {
 	@Override
 	protected void handleDataMarker(String id, BlockPos pos, ServerLevelAccessor level, Random random, BoundingBox box) {
 		if (FTBStructuresData.palettes.containsKey(id)) {
-			BlockState state = FTBStructuresData.palettes.get(id).getOne(random, Blocks.AIR.defaultBlockState());
+			StateWithData stateWithData = FTBStructuresData.palettes.get(id).getOne(random, StateWithData.EMPTY);
 
-			if (state != Blocks.AIR.defaultBlockState()) {
-				level.setBlock(pos, state, 2);
+			if (stateWithData != StateWithData.EMPTY) {
+				level.setBlock(pos, stateWithData.state, 2);
+
+				if (stateWithData.data != null) {
+					BlockEntity entity = level.getBlockEntity(pos);
+
+					if (entity != null) {
+						CompoundTag tag = stateWithData.data.copy();
+						tag.putInt("x", pos.getX());
+						tag.putInt("y", pos.getY());
+						tag.putInt("z", pos.getZ());
+						entity.load(stateWithData.state, tag);
+					}
+				}
 			}
 		} else {
 			level.setBlock(pos, Blocks.STONE.defaultBlockState(), 2);
