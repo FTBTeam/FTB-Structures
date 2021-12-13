@@ -265,7 +265,7 @@ public class FTBStructuresData {
 		for (WeightedSet.Entry<String> entry : blocks) {
 			try {
 				BlockStateParser parser = new BlockStateParser(new StringReader(entry.result), false);
-				parser.parse(false);
+				parser.parse(true);
 				states.add(new StateWithData(Objects.requireNonNull(parser.getState()), parser.getNbt()), entry.weight);
 			} catch (Exception ex) {
 				throw new RuntimeException("Invalid state: " + entry.result);
